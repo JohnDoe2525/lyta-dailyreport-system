@@ -41,6 +41,13 @@ public class EmployeeController {
         return "employees/list";
     }
 
+    // 従業員更新画面
+    @GetMapping("/update")
+    public String update(Model model) {
+
+        return "employees/update";
+    }
+
     // 従業員詳細画面
     @GetMapping(value = "/{code}/")
     public String detail(@PathVariable String code, Model model) {

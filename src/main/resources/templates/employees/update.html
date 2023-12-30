@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html class="h-100" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="common/header :: head_fragment(title=従業員更新)"></head>
+
+<body class="h-100 overflow-hidden">
+    <div class="row h-100">
+        <div class="h-100 p-3 mb-2 bg-dark text-white col-sm-2">
+            <nav th:replace="common/side :: copy"></nav>
+        </div>
+        <div class="mt-3 h-100 col-sm-10">
+            <!-- コンテンツ -->
+            <div class="container-fluid p-0">
+                <h1 class="h3 mb-3">従業員 更新</h1>
+
+                <div class="row">
+                    <div class="col-xl-11">
+                        <div class="card">
+                            <form method="post" th:action="@{/user/update/{id}/(id=${user.id})}" th:object="${user}">
+                                <label for="id">社員番号</label>
+                                <input type="text" id="id" name="id" th:value="*{id}" th:text="*{id}" th:errorclass="err">
+                                <span th:errors="*{id}" class="err"></span>
+                                <br>
+                                <label for="name">氏名</label>
+                                <input type="text" th:field="*{name}" th:errorclass="err">
+                                <span th:errors="*{name}" class="err"></span>
+                                <br>
+                                <label for="password">パスワード</label>
+                                <input type="password" th:field="*{password}" th:errorclass="err">
+                                <span th:errors="*{password}" class="err"></span>
+                                <br>
+                                <label for="role">権限</label>
+                                <select th:field="*{role}" th:errorclass="err">
+                                    <option value="" th:text="選択してください">
+                                    <option th:each="item:${T(com.techacademy.entity.employees.role).values()}" th:value="${item}" th:text="${item}" th:selected="*{role==${item}"}>
+                                </select>
+                                <span th:errors="*{role}" class="err"></span>
+                                <br>
+                            </form>
+                        </div>
+                        <div>
+                            <a th:href="@{/employees/add}" class="btn btn-primary">登録</a>
+                            <a th:href="@{/employees/list}" class="btn btn-primary">戻る</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
