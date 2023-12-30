@@ -42,9 +42,10 @@ public class EmployeeController {
     }
 
     // 従業員更新画面
-    @GetMapping("/update")
-    public String update(Model model) {
+    @GetMapping("/update/{code}/")
+    public String update(@PathVariable String code,Model model) {
 
+        model.addAttribute("employee", employeeService.findByCode(code));
         return "employees/update";
     }
 
@@ -119,5 +120,7 @@ public class EmployeeController {
 
         return "redirect:/employees";
     }
+
+    // 従業員更新処理
 
 }

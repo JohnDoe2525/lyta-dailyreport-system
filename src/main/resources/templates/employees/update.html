@@ -12,35 +12,32 @@
             <!-- コンテンツ -->
             <div class="container-fluid p-0">
                 <h1 class="h3 mb-3">従業員 更新</h1>
-
+                パスワードは変更する場合のみ入力してください
                 <div class="row">
                     <div class="col-xl-11">
                         <div class="card">
-                            <form method="post" th:action="@{/user/update/{id}/(id=${user.id})}" th:object="${user}">
-                                <label for="id">社員番号</label>
-                                <input type="text" id="id" name="id" th:value="*{id}" th:text="*{id}" th:errorclass="err">
-                                <span th:errors="*{id}" class="err"></span>
-                                <br>
-                                <label for="name">氏名</label>
-                                <input type="text" th:field="*{name}" th:errorclass="err">
-                                <span th:errors="*{name}" class="err"></span>
-                                <br>
-                                <label for="password">パスワード</label>
-                                <input type="password" th:field="*{password}" th:errorclass="err">
-                                <span th:errors="*{password}" class="err"></span>
-                                <br>
-                                <label for="role">権限</label>
-                                <select th:field="*{role}" th:errorclass="err">
-                                    <option value="" th:text="選択してください">
-                                    <option th:each="item:${T(com.techacademy.entity.employees.role).values()}" th:value="${item}" th:text="${item}" th:selected="*{role==${item}"}>
-                                </select>
-                                <span th:errors="*{role}" class="err"></span>
-                                <br>
-                            </form>
-                        </div>
-                        <div>
-                            <a th:href="@{/employees/add}" class="btn btn-primary">登録</a>
-                            <a th:href="@{/employees/list}" class="btn btn-primary">戻る</a>
+                            <div class="card-body mb-3">
+                                <form method="post" th:action="@{/user/update/{code}/(code=${employee.code})}" th:object="${employee}">
+                                    <label for="code">社員番号</label>
+                                    <input type="hidden" id="code" name="code" th:value="*{code}" th:text="*{code}">
+                                    <br>
+                                    <label for="name">氏名</label>
+                                    <input type="text" th:field="*{name}">
+                                    <br>
+                                    <label for="password">パスワード</label>
+                                    <input type="password" id="password" name="password">
+                                    <br>
+                                    <label for="role">権限</label>
+                                    <select th:field="*{role}">
+                                        <option th:each="item:${T(com.techacademy.entity.Employee.Role).values()}" th:value="${item}" th:text="${item.getValue}" th:selected="*{role}==${item}"}>
+                                    </select>
+                                    <br>
+                                </form>
+                                <div class="col-auto">
+                                    <a th:href="@{/employees/add}" class="btn btn-primary">更新</a>
+                                    <a th:href="@{/employees}" class="btn btn-primary">戻る</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
