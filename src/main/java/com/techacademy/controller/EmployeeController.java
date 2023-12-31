@@ -124,9 +124,13 @@ public class EmployeeController {
     // 従業員更新処理
     @PostMapping("/{code}/update")
     public String update(@Validated Employee employee,BindingResult res,Model model) {
-
-        employeeService.save(employee);
-
+        
+        if(res.hasErrors()) {
+            return update(employee.getCode(),model);
+        } else {
+            employeeService.update(employee);
+        }
+        
         return "redirect:/employees";
     }
 

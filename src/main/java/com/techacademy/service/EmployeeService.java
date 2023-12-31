@@ -51,7 +51,19 @@ public class EmployeeService {
         employeeRepository.save(employee);
         return ErrorKinds.SUCCESS;
     }
-    
+
+    // 従業員更新
+    @Transactional
+    public Employee update(Employee employee) {
+
+//        Employee existingEmployee = findByCode(employee.getCode());
+        LocalDateTime now = LocalDateTime.now();
+        employee.setCreatedAt(findByCode(employee.getCode()).getCreatedAt());
+        employee.setUpdatedAt(now);
+
+        return employeeRepository.save(employee);
+    }
+
     // 従業員削除
     @Transactional
     public ErrorKinds delete(String code, UserDetail userDetail) {
