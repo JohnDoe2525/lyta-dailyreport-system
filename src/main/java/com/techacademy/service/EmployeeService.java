@@ -54,14 +54,26 @@ public class EmployeeService {
 
     // 従業員更新
     @Transactional
-    public Employee update(Employee employee) {
-
-//        Employee existingEmployee = findByCode(employee.getCode());
+    public ErrorKinds update(Employee employee) {
+        
+        // パスワードを変更しなかった場合は登録済みのパスワードを呼び出す。
+        if (employee.getPassword() == "") {
+            employee.setPassword(findByCode(employee.getCode()).getPassword());
+        } else {
+            ErrorKinds result = employeePasswordCheck(employee);
+            if (ErrorKinds.CHECK_OK != result) {
+                return result;
+            }
+            employee.setPassword(passwordEncoder.encode(employee.getPassword()));
+        }
+        
+        // 登録日時は更新せずに登録済みの登録日時を呼び出す。
         LocalDateTime now = LocalDateTime.now();
         employee.setCreatedAt(findByCode(employee.getCode()).getCreatedAt());
         employee.setUpdatedAt(now);
 
-        return employeeRepository.save(employee);
+        employeeRepository.save(employee);
+        return ErrorKinds.SUCCESS;
     }
 
     // 従業員削除
