@@ -40,18 +40,6 @@ public class EmployeeController {
         return "employees/list";
     }
 
-    // 従業員更新画面
-    @GetMapping("/update/{code}/")
-    public String update(@PathVariable String code,Employee employee,Model model) {
-
-        if (code == null) {
-            model.addAttribute("employee", employee);
-        } else {
-            model.addAttribute("employee", employeeService.findByCode(code));
-        }
-        return "employees/update";
-    }
-
     // 従業員詳細画面
     @GetMapping(value = "/{code}/")
     public String detail(@PathVariable String code, Model model) {
@@ -124,17 +112,32 @@ public class EmployeeController {
         return "redirect:/employees";
     }
 
+    // 従業員更新画面
+    @GetMapping("/{code}/update")
+    public String edit(@PathVariable String code,Employee employee,Model model) {
+
+        // 従業員更新処理でエラーが発生した場合の遷移はnullを受け取る
+        if (code == null) {
+            model.addAttribute("employee", employee);
+        } else {
+            model.addAttribute("employee", employeeService.findByCode(code));
+        }
+        return "employees/update";
+    }
+
     // 従業員更新処理
     @PostMapping("/{code}/update")
     public String update(@Validated Employee employee,BindingResult res,Model model) {
-        
+
+        // Entityの入力チェック
         if(res.hasErrors()) {
-            return update(null,employee,model);
+            return edit(null,employee,model);
         } else {
+            // パスワードの入力チェック
             ErrorKinds result = employeeService.update(employee);
             if (ErrorMessage.contains(result)) {
                 model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
-                return update(null, employee,model);
+                return edit(null, employee,model);
             }
         }
 

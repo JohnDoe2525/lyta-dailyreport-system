@@ -64,7 +64,6 @@ public class EmployeeService {
             if (ErrorKinds.CHECK_OK != result) {
                 return result;
             }
-            employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         }
         
         // 登録日時は更新せずに登録済みの登録日時を呼び出す。
