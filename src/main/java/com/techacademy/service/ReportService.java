@@ -1,6 +1,7 @@
 package com.techacademy.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.techacademy.entity.Report;
 import com.techacademy.repository.EmployeeRepository;
 import com.techacademy.repository.ReportRepository;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Service
 public class ReportService {
@@ -37,18 +39,23 @@ public class ReportService {
 //        return ErrorKinds.SUCCESS;
 //    }
 
-    // 従業員一覧表示処理
+    // 従業員一覧表示処理(管理者)
     public List<Report> findAll() {
         return reportRepository.findAll();
     }
 
+    // 従業員一覧表示処理(一般)
+    public List<Report> findAllByEmployeeCode(String employeeCode) {
+        return reportRepository.findAllByEmployeeCode(employeeCode);
+    }
+
 //    // 1件を検索
-//    public Employee findByCode(String code) {
+//    public Report findByCode(Integer id) {
 //        // findByIdで検索
-//        Optional<Employee> option = employeeRepository.findById(code);
+//        Optional<Report> option = reportRepository.findById(id);
 //        // 取得できなかった場合はnullを返す
-//        Employee employee = option.orElse(null);
-//        return employee;
+//        Report report = option.orElse(null);
+//        return report;
 //    }
 
 }

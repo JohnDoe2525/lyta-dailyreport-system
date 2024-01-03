@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.techacademy.constants.ErrorKinds;
 import com.techacademy.constants.ErrorMessage;
 import com.techacademy.entity.Employee;
+import com.techacademy.entity.Employee.Role;
+import com.techacademy.entity.Report;
 import com.techacademy.service.EmployeeService;
 import com.techacademy.service.ReportService;
 import com.techacademy.service.UserDetail;
@@ -33,11 +35,18 @@ public class ReportsController {
 
     // 従業員一覧画面
     @GetMapping
-    public String list(Model model) {
+    public String list(Model model,@AuthenticationPrincipal UserDetail userDetail) {
 
-        model.addAttribute("listSize", reportService.findAll().size());
-        model.addAttribute("reportList", reportService.findAll());
+        if (userDetail.getEmployee().getRole() == Role.ADMIN) {
 
+            model.addAttribute("listSize", reportService.findAll().size());
+            model.addAttribute("reportList", reportService.findAll());
+        } else {
+            
+            String code = userDetail.getEmployee().getCode();
+            model.addAttribute("listSize", reportService.findAllByEmployeeCode(code).size());
+            model.addAttribute("reportList", reportService.findAllByEmployeeCode(code));
+        }
         return "reports/list";
     }
 
