@@ -17,25 +17,26 @@ import com.techacademy.constants.ErrorKinds;
 import com.techacademy.constants.ErrorMessage;
 import com.techacademy.entity.Employee;
 import com.techacademy.service.EmployeeService;
+import com.techacademy.service.ReportService;
 import com.techacademy.service.UserDetail;
 
 @Controller
 @RequestMapping("reports")
 public class ReportsController {
 
-//    private final EmployeeService employeeService;
+    private final ReportService reportService;
 
-//    @Autowired
-//    public ReportsController(EmployeeService employeeService) {
-//        this.employeeService = employeeService;
-//    }
+    @Autowired
+    public ReportsController(ReportService reportService) {
+        this.reportService = reportService;
+    }
 
     // 従業員一覧画面
     @GetMapping
     public String list(Model model) {
 
-//        model.addAttribute("listSize", employeeService.findAll().size());
-//        model.addAttribute("employeeList", employeeService.findAll());
+        model.addAttribute("listSize", reportService.findAll().size());
+        model.addAttribute("reportList", reportService.findAll());
 
         return "reports/list";
     }
