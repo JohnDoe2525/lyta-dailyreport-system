@@ -1,6 +1,7 @@
 
 package com.techacademy.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -33,7 +34,7 @@ public class Report {
     // 日付
     @NotNull
     @Column(nullable = false)
-    private Date reportDate;
+    private LocalDate reportDate;
 
     // タイトル
     @NotEmpty
@@ -45,15 +46,10 @@ public class Report {
     @Column(columnDefinition="LONGTEXT",nullable = false)
     private String content;
 
+    // 社員番号
     @ManyToOne
     @JoinColumn(name = "employee_code", referencedColumnName = "code", nullable = false)
     private Employee employee;
-
-//    //社員番号(外部キー)
-//    @Column(length = 10)
-//    @NotEmpty
-//    @Length(max = 10)
-//    private String employeeCode;
 
     // 削除フラグ(論理削除を行うため)
     @Column(columnDefinition="TINYINT",nullable = false)

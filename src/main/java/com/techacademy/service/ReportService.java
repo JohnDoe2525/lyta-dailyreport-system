@@ -39,23 +39,23 @@ public class ReportService {
 //        return ErrorKinds.SUCCESS;
 //    }
 
-    // 従業員一覧表示処理(管理者)
+    // 日報一覧表示処理(管理者)
     public List<Report> findAll() {
         return reportRepository.findAll();
     }
 
-    // 従業員一覧表示処理(一般)
+    // 日報一覧表示処理(一般)
     public List<Report> findAllByEmployeeCode(String employeeCode) {
         return reportRepository.findAllByEmployeeCode(employeeCode);
     }
 
-//    // 1件を検索
-//    public Report findByCode(Integer id) {
-//        // findByIdで検索
-//        Optional<Report> option = reportRepository.findById(id);
-//        // 取得できなかった場合はnullを返す
-//        Report report = option.orElse(null);
-//        return report;
-//    }
+    // 1件を検索
+    public Report findById(Integer id) {
+        // findByIdで検索
+        Optional<Report> option = reportRepository.findById(id);
+        // 取得できなかった場合はnullを返す
+        Report report = option.orElse(null);
+        return report;
+    }
 
 }

@@ -33,7 +33,7 @@ public class ReportsController {
         this.reportService = reportService;
     }
 
-    // 従業員一覧画面
+    // 日報一覧画面
     @GetMapping
     public String list(Model model,@AuthenticationPrincipal UserDetail userDetail) {
 
@@ -42,7 +42,7 @@ public class ReportsController {
             model.addAttribute("listSize", reportService.findAll().size());
             model.addAttribute("reportList", reportService.findAll());
         } else {
-            
+
             String code = userDetail.getEmployee().getCode();
             model.addAttribute("listSize", reportService.findAllByEmployeeCode(code).size());
             model.addAttribute("reportList", reportService.findAllByEmployeeCode(code));
@@ -50,14 +50,14 @@ public class ReportsController {
         return "reports/list";
     }
 
-//    // 従業員詳細画面
-//    @GetMapping(value = "/{code}/")
-//    public String detail(@PathVariable String code, Model model) {
-//
-//        model.addAttribute("employee", employeeService.findByCode(code));
-//        return "employees/detail";
-//    }
-//
+    // 日報詳細画面
+    @GetMapping(value = "/{id}/")
+    public String detail(@PathVariable Integer id, Model model) {
+
+        model.addAttribute("report", reportService.findById(id));
+        return "reports/detail";
+    }
+
 //    // 従業員新規登録画面
 //    @GetMapping(value = "/add")
 //    public String create(@ModelAttribute Employee employee) {
