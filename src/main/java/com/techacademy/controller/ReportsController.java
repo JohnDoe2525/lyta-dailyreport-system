@@ -106,34 +106,27 @@ public class ReportsController {
 //
 //        return "redirect:/employees";
 //    }
-//
-//    // 従業員削除処理
-//    @PostMapping(value = "/{code}/delete")
-//    public String delete(@PathVariable String code, @AuthenticationPrincipal UserDetail userDetail, Model model) {
-//
-//        ErrorKinds result = employeeService.delete(code, userDetail);
-//
-//        if (ErrorMessage.contains(result)) {
-//            model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
-//            model.addAttribute("employee", employeeService.findByCode(code));
-//            return detail(code, model);
-//        }
-//
-//        return "redirect:/employees";
-//    }
-//
-//    // 従業員更新画面
-//    @GetMapping("/{code}/update")
-//    public String edit(@PathVariable String code,Employee employee,Model model) {
-//
-//        // 従業員更新処理でエラーが発生した場合の遷移はnullを受け取る
-//        if (code == null) {
-//            model.addAttribute("employee", employee);
-//        } else {
-//            model.addAttribute("employee", employeeService.findByCode(code));
-//        }
-//        return "employees/update";
-//    }
+
+    // 日報削除処理
+    @PostMapping(value = "/{id}/delete")
+    public String delete(@PathVariable Integer id, Model model) {
+
+        reportService.delete(id);
+        return "redirect:/reports";
+    }
+
+    // 日報更新画面
+    @GetMapping("/{id}/update")
+    public String edit(@PathVariable Integer id,Report report,Model model) {
+
+        // 従業員更新処理でエラーが発生した場合の遷移はnullを受け取る
+        if (id == null) {
+            model.addAttribute("report", report);
+        } else {
+            model.addAttribute("report", reportService.findById(id));
+        }
+        return "reports/update";
+    }
 //
 //    // 従業員更新処理
 //    @PostMapping("/{code}/update")

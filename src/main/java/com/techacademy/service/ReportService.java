@@ -1,5 +1,6 @@
 package com.techacademy.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Service;
 import com.techacademy.entity.Report;
 import com.techacademy.repository.EmployeeRepository;
 import com.techacademy.repository.ReportRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Service
@@ -23,21 +27,16 @@ public class ReportService {
         this.reportRepository = reportRepository;
     }
 
-//    // 従業員削除
-//    @Transactional
-//    public ErrorKinds delete(String code, UserDetail userDetail) {
-//
-//        // 自分を削除しようとした場合はエラーメッセージを表示
-//        if (code.equals(userDetail.getEmployee().getCode())) {
-//            return ErrorKinds.LOGINCHECK_ERROR;
-//        }
-//        Employee employee = findByCode(code);
-//        LocalDateTime now = LocalDateTime.now();
-//        employee.setUpdatedAt(now);
-//        employee.setDeleteFlg(true);
-//
-//        return ErrorKinds.SUCCESS;
-//    }
+    // 従業員削除
+    @Transactional
+    public void delete(Integer id) {
+
+        Report report = findById(id);
+        LocalDateTime now = LocalDateTime.now();
+        report.setUpdatedAt(now);
+        report.setDeleteFlg(true);
+        reportRepository.save(report);
+    }
 
     // 日報一覧表示処理(管理者)
     public List<Report> findAll() {
