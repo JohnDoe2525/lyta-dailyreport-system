@@ -1,5 +1,7 @@
 package com.techacademy.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -61,13 +63,13 @@ public class ReportsController {
         return "reports/detail";
     }
 
-//    // 従業員新規登録画面
-//    @GetMapping(value = "/add")
-//    public String create(@ModelAttribute Employee employee) {
-//
-//        return "employees/new";
-//    }
-//
+    // 従業員新規登録画面
+    @GetMapping(value = "/add")
+    public String create(@ModelAttribute Report report,@AuthenticationPrincipal UserDetail userDetail,Model model) {
+        model.addAttribute("loginUser", userDetail.getUsername());
+        return "reports/new";
+    }
+
 //    // 従業員新規登録処理
 //    @PostMapping(value = "/add")
 //    public String add(@Validated Employee employee, BindingResult res, Model model) {
@@ -145,6 +147,8 @@ public class ReportsController {
         LocalDate checkNewDate = report.getReportDate();
 
         // 重複チェック
+        // 日付を変更する場合に同じ日付かつ同じ従業員の日報が存在したらエラーを表示
+        // 日付を変更しない場合も日付は同じという判定になるが、他の要素(タイトル・内容)を変更できなくなるためエラーの対象外とする
         if(reportService.findExistReport(checkId,checkNewDate).isEmpty() || checkOldDate.equals(checkNewDate)) {
             reportService.update(report);
         } else {
