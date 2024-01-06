@@ -44,6 +44,8 @@ public class Report {
     private String title;
 
     // 内容
+    @NotEmpty
+    @Length(max=600)
     @Column(columnDefinition="LONGTEXT",nullable = false)
     private String content;
 

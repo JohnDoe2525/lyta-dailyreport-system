@@ -1,5 +1,6 @@
 package com.techacademy.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -7,6 +8,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.techacademy.constants.ErrorKinds;
+import com.techacademy.entity.Employee;
 import com.techacademy.entity.Report;
 import com.techacademy.repository.EmployeeRepository;
 import com.techacademy.repository.ReportRepository;
@@ -27,7 +30,7 @@ public class ReportService {
         this.reportRepository = reportRepository;
     }
 
-    // 従業員削除
+    // 日報削除
     @Transactional
     public void delete(Integer id) {
 
@@ -48,6 +51,22 @@ public class ReportService {
         return reportRepository.findAllByEmployeeCode(employeeCode);
     }
 
+    // 日報更新
+    @Transactional
+    public Report update(Report report) {
+
+        // 社員番号を検索してセット
+        report.setEmployee(findById(report.getId()).getEmployee());
+
+        // 登録日時は更新せずに登録済みの登録日時を呼び出す。
+        LocalDateTime now = LocalDateTime.now();
+        report.setCreatedAt(findById(report.getId()).getCreatedAt());
+        report.setUpdatedAt(now);
+
+        return reportRepository.save(report);
+
+    }
+
     // 1件を検索
     public Report findById(Integer id) {
         // findByIdで検索
@@ -55,6 +74,11 @@ public class ReportService {
         // 取得できなかった場合はnullを返す
         Report report = option.orElse(null);
         return report;
+    }
+    
+    // 重複チェック
+    public List<Report> findExistReport(String employeeCode,LocalDate reportDate){
+        return reportRepository.findAllByEmployeeCodeAndReportDate(employeeCode,reportDate);
     }
 
 }

@@ -1,5 +1,8 @@
 package com.techacademy.controller;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -127,24 +130,29 @@ public class ReportsController {
         }
         return "reports/update";
     }
-//
-//    // 従業員更新処理
-//    @PostMapping("/{code}/update")
-//    public String update(@Validated Employee employee,BindingResult res,Model model) {
-//
-//        // Entityの入力チェック
-//        if(res.hasErrors()) {
-//            return edit(null,employee,model);
-//        } else {
-//            // パスワードの入力チェック
-//            ErrorKinds result = employeeService.update(employee);
-//            if (ErrorMessage.contains(result)) {
-//                model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
-//                return edit(null, employee,model);
-//            }
-//        }
-//
-//        return "redirect:/employees";
-//    }
-//
+
+    // 従業員更新処理
+    @PostMapping("/{id}/update")
+    public String update(@Validated Report report,BindingResult res,Model model,@PathVariable Integer id) {
+
+        // Entityの入力チェック
+        if(res.hasErrors()) {
+            return edit(null,report,model);
+        }
+
+        String checkId = reportService.findById(report.getId()).getEmployee().getCode();
+        LocalDate checkOldDate = reportService.findById(id).getReportDate();
+        LocalDate checkNewDate = report.getReportDate();
+
+        // 重複チェック
+        if(reportService.findExistReport(checkId,checkNewDate).isEmpty() || checkOldDate.equals(checkNewDate)) {
+            reportService.update(report);
+        } else {
+            model.addAttribute("existError","登録されている日付です");
+            return edit(null,report,model);
+        }
+
+        return "redirect:/reports";
+    }
+
 }
