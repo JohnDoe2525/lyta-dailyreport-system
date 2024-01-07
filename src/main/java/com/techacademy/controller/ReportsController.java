@@ -32,10 +32,12 @@ import com.techacademy.service.UserDetail;
 public class ReportsController {
 
     private final ReportService reportService;
+    private final EmployeeService employeeService; 
 
     @Autowired
-    public ReportsController(ReportService reportService) {
+    public ReportsController(ReportService reportService,EmployeeService employeeService) {
         this.reportService = reportService;
+        this.employeeService = employeeService;
     }
 
     // 日報一覧画面
@@ -66,7 +68,7 @@ public class ReportsController {
     // 従業員新規登録画面
     @GetMapping(value = "/add")
     public String create(@ModelAttribute Report report,@AuthenticationPrincipal UserDetail userDetail,Model model) {
-        model.addAttribute("loginUser", userDetail.getUsername());
+        model.addAttribute("loginUser",employeeService.findByCode(userDetail.getUsername()));
         return "reports/new";
     }
 
