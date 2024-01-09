@@ -8,26 +8,20 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.techacademy.constants.ErrorKinds;
-import com.techacademy.entity.Employee;
 import com.techacademy.entity.Report;
-import com.techacademy.repository.EmployeeRepository;
 import com.techacademy.repository.ReportRepository;
 
 import jakarta.transaction.Transactional;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Service
 public class ReportService {
 
     private final ReportRepository reportRepository;
-    private final EmployeeRepository employeeRepository;
 
     @Autowired
-    public ReportService(ReportRepository reportRepository,EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+    public ReportService(ReportRepository reportRepository) {
         this.reportRepository = reportRepository;
     }
 
