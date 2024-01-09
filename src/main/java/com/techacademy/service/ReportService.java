@@ -16,6 +16,7 @@ import com.techacademy.repository.ReportRepository;
 
 import jakarta.transaction.Transactional;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Service
@@ -51,6 +52,23 @@ public class ReportService {
         return reportRepository.findAllByEmployeeCode(employeeCode);
     }
 
+    //日報新規登録
+    @Transactional
+    public Report save(Report report,@AuthenticationPrincipal UserDetail userDetail) {
+
+        report.setEmployee(userDetail.getEmployee());
+
+        // 社員番号を検索してセット
+        report.setDeleteFlg(false);
+
+        LocalDateTime now = LocalDateTime.now();
+        report.setCreatedAt(now);
+        report.setUpdatedAt(now);
+
+        return reportRepository.save(report);
+
+    }
+
     // 日報更新
     @Transactional
     public Report update(Report report) {
@@ -75,8 +93,10 @@ public class ReportService {
         Report report = option.orElse(null);
         return report;
     }
-    
-    // 重複チェック
+
+
+
+    // 重複チェック(更新処理用)
     public List<Report> findExistReport(String employeeCode,LocalDate reportDate){
         return reportRepository.findAllByEmployeeCodeAndReportDate(employeeCode,reportDate);
     }

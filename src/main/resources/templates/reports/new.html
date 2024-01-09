@@ -33,7 +33,7 @@
                                     <div class="mb-3">
                                         <label class="form-label" for="name">氏名</label>
                                         <p class="mb-1"></p>
-                                       <input class="form-control" type="hidden" th:field="${loginUser.name}" id="name" th:text="${loginUser.name}">
+                                       <input class="form-control" type="hidden" th:field="*{employee.name}" id="name" th:text="*{employee.name}">
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label" for="title">タイトル</label>

@@ -32,7 +32,7 @@ import com.techacademy.service.UserDetail;
 public class ReportsController {
 
     private final ReportService reportService;
-    private final EmployeeService employeeService; 
+    private final EmployeeService employeeService;
 
     @Autowired
     public ReportsController(ReportService reportService,EmployeeService employeeService) {
@@ -65,54 +65,32 @@ public class ReportsController {
         return "reports/detail";
     }
 
-    // 従業員新規登録画面
+    // 日報新規登録画面
     @GetMapping(value = "/add")
     public String create(@ModelAttribute Report report,@AuthenticationPrincipal UserDetail userDetail,Model model) {
-        model.addAttribute("loginUser",employeeService.findByCode(userDetail.getUsername()));
+        report.setEmployee(employeeService.findByCode(userDetail.getUsername()));
         return "reports/new";
     }
 
-//    // 従業員新規登録処理
-//    @PostMapping(value = "/add")
-//    public String add(@Validated Employee employee, BindingResult res, Model model) {
-//
-//        // パスワード空白チェック
-//        /*
-//         * エンティティ側の入力チェックでも実装は行えるが、更新の方でパスワードが空白でもチェックエラーを出さずに
-//         * 更新出来る仕様となっているため上記を考慮した場合に別でエラーメッセージを出す方法が簡単だと判断
-//         */
-//        if ("".equals(employee.getPassword())) {
-//            // パスワードが空白だった場合
-//            model.addAttribute(ErrorMessage.getErrorName(ErrorKinds.BLANK_ERROR),
-//                    ErrorMessage.getErrorValue(ErrorKinds.BLANK_ERROR));
-//
-//            return create(employee);
-//
-//        }
-//
-//        // 入力チェック
-//        if (res.hasErrors()) {
-//            return create(employee);
-//        }
-//
-//        // 論理削除を行った従業員番号を指定すると例外となるためtry~catchで対応
-//        // (findByIdでは削除フラグがTRUEのデータが取得出来ないため)
-//        try {
-//            ErrorKinds result = employeeService.save(employee);
-//
-//            if (ErrorMessage.contains(result)) {
-//                model.addAttribute(ErrorMessage.getErrorName(result), ErrorMessage.getErrorValue(result));
-//                return create(employee);
-//            }
-//
-//        } catch (DataIntegrityViolationException e) {
-//            model.addAttribute(ErrorMessage.getErrorName(ErrorKinds.DUPLICATE_EXCEPTION_ERROR),
-//                    ErrorMessage.getErrorValue(ErrorKinds.DUPLICATE_EXCEPTION_ERROR));
-//            return create(employee);
-//        }
-//
-//        return "redirect:/employees";
-//    }
+    // 日報新規登録処理
+    @PostMapping(value = "/add")
+    public String add(@Validated Report report,BindingResult res,@AuthenticationPrincipal UserDetail userDetail,Model model) {
+
+        // 入力チェック
+        if (res.hasErrors()) {
+            return create(report,userDetail,model);
+        }
+
+        // 重複チェック
+        if (reportService.findExistReport(userDetail.getUsername(), report.getReportDate()).isEmpty()) {
+            reportService.save(report, userDetail);
+        } else {
+            model.addAttribute("existError","既に登録されている日付です");
+            return create(report,userDetail,model);
+        }
+
+        return "redirect:/reports";
+    }
 
     // 日報削除処理
     @PostMapping(value = "/{id}/delete")
@@ -135,7 +113,7 @@ public class ReportsController {
         return "reports/update";
     }
 
-    // 従業員更新処理
+    // 日報更新処理
     @PostMapping("/{id}/update")
     public String update(@Validated Report report,BindingResult res,Model model,@PathVariable Integer id) {
 

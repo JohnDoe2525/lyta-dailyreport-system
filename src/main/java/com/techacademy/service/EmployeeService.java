@@ -1,3 +1,4 @@
+
 package com.techacademy.service;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.techacademy.constants.ErrorKinds;
 import com.techacademy.entity.Employee;
+import com.techacademy.entity.Report;
 import com.techacademy.repository.EmployeeRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +22,13 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ReportService reportService;
 
     @Autowired
-    public EmployeeService(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder) {
+    public EmployeeService(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder,ReportService reportService) {
         this.employeeRepository = employeeRepository;
         this.passwordEncoder = passwordEncoder;
+        this.reportService = reportService;
     }
 
     // 従業員保存
@@ -55,7 +59,7 @@ public class EmployeeService {
     // 従業員更新
     @Transactional
     public ErrorKinds update(Employee employee) {
-        
+
         // パスワードを変更しなかった場合は登録済みのパスワードを呼び出す。
         if (employee.getPassword() == "") {
             employee.setPassword(findByCode(employee.getCode()).getPassword());
@@ -65,7 +69,7 @@ public class EmployeeService {
                 return result;
             }
         }
-        
+
         // 登録日時は更新せずに登録済みの登録日時を呼び出す。
         LocalDateTime now = LocalDateTime.now();
         employee.setCreatedAt(findByCode(employee.getCode()).getCreatedAt());
@@ -87,6 +91,13 @@ public class EmployeeService {
         LocalDateTime now = LocalDateTime.now();
         employee.setUpdatedAt(now);
         employee.setDeleteFlg(true);
+
+        //紐づく日報も削除
+        List<Report> reportList = reportService.findAllByEmployeeCode(code);
+
+        for (Report report:reportList) {
+            reportService.delete(report.getId());
+        }
 
         return ErrorKinds.SUCCESS;
     }
